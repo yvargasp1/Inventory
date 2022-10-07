@@ -50,6 +50,7 @@ export class InventarioFormComponent
       flatMap((value) => (value ? this._filter(value) : []))
     );
 
+    this.editar();
     console.log(this.usuarioFiltrado);
   }
 
@@ -132,21 +133,6 @@ export class InventarioFormComponent
 
           if (date <= today && !isNaN(this.model.cantidad)) {
             super.crear();
-            this.InventarioService.crear(this.model).subscribe(
-              (inventario) => {
-                Swal.fire({
-                  title: 'Bien',
-                  text: `Se creo el producto. ${inventario.nombre}`,
-                  icon: 'success',
-                });
-              },
-              (err) => {
-                console.log(err.error.message);
-                if (err.status === 400) {
-                  this.error = err.error;
-                }
-              }
-            );
           } else {
             if (date > today) {
               Swal.fire(
@@ -193,7 +179,7 @@ export class InventarioFormComponent
       let today_show = moment(today).format('YYYY-MM-DD');
 
       if (date <= today) {
-        super.crear();
+        super.modificar();
       } else {
         Swal.fire(
           'Validar fecha',
