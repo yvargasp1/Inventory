@@ -1,0 +1,99 @@
+<div class="card border-primary mb-3" style="max-width: 18rem">
+  <div class="card-header">{{ titulo }}</div>
+  <div class="card-body text-primary">
+    <button
+      type="button"
+      class="btn btn-primary my-2"
+      routerLink="/inventarios"
+    >
+      Regresar
+    </button>
+    <form>
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input
+          type="text"
+          name="nombre"
+          id="nombre"
+          class="form-control"
+          [(ngModel)]="model.nombre"
+        />
+        <div class="alert alert-danger" *ngIf="error && error.nombre">
+          {{ error.nombre }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="cantidad">Cantidad</label>
+        <input
+          type="text"
+          name="cantidad"
+          id="cantidad"
+          class="form-control"
+          [(ngModel)]="model.cantidad"
+        />
+        <div class="alert alert-danger" *ngIf="error && error.cantidad">
+          {{ error.cantidad }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="createAt">Fecha de ingreso</label>
+        <input
+          type="date"
+          id="createAt"
+          name="createAt"
+          class="form-control"
+          [(ngModel)]="model.createAt"
+        />
+        <div class="alert alert-danger" *ngIf="error && error.createAt">
+          {{ error.createAt }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="createAt">Buscar Usuario</label>
+        <div class="example-container">
+          <mat-form-field appearance="fill">
+            <mat-label></mat-label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Digitar"
+              matInput
+              [formControl]="autoCompleteControl"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              [displayWith]="mostrarNombre"
+              (optionSelected)="seleccionarinventario($event)"
+            >
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="form-group">
+        <select>
+          <option
+            *ngFor="let usuario of usuarioFiltrado | async"
+            [value]="usuario"
+          >
+            {{ usuario.id }} {{ usuario.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="model.id ? modificar() : crear()"
+        >
+          {{ model.id ? "Modificar" : "Crear" }}
+        </button>
+      </div>
+    </form>
+    <!--   </div>
+</div> -->
+  </div>
+</div>

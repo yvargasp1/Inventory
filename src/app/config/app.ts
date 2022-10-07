@@ -1,0 +1,1 @@
+export const URL_ENDPOINT='http://localhost:8090/api'
