@@ -22,25 +22,24 @@ export abstract class CommonFormComponent<
   ) {}
 
   ngOnInit(): void {
+    this.service.listar();
+    console.log(this.service.listar());
     this.editar();
   }
 
   public crear() {
-    this.service.crear(this.model).subscribe(
-      (m) => {
-        Swal.fire(
-          'Nuevo',
-          `${this.nombreModel} ${m.nombre} creado con exito!`,
-          'success'
-        );
+    this.service.crear(this.model).subscribe({
+      next: () => {
+        Swal.fire('Nuevo', `${this.model.nombre} creado con exito!`, 'success');
         this.router.navigate([this.redirect]);
       },
-      (err) => {
+
+      error: (err) => {
         if (err.status === 400) {
           this.error = err.error;
         }
-      }
-    );
+      },
+    });
   }
 
   public editar(): void {

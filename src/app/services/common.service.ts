@@ -42,6 +42,7 @@ export abstract class CommonService<E extends Generic> {
   // {headers:this.httpHeaders}
   listarPagina(page: string, size: string): Observable<any> {
     const params = new HttpParams().set('page', page).set('size', size);
+    console.log(params);
     return this.http.get<any>(`${this.urlEndPoint}/pagina`, { params: params });
   }
   /* protected agregarAuthorizationHeader() {

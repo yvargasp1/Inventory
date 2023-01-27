@@ -1,12 +1,19 @@
 <div class="card-header">{{ titulo }}</div>
 <div class="form-group">
-  <input
-    type="text"
-    name="filterPost"
-    class="form-control"
-    placeholder="Buscar.."
-    [(ngModel)]="filterPost"
-  />
+  <mat-form-field class="example-full-width">
+    <span matPrefix> </span>
+    <input
+      type="tel"
+      name="filterPost"
+      class="form-group"
+      matInput
+      placeholder="Buscar.."
+      [(ngModel)]="filterPost"
+    />
+    <button matSuffix mat-button>
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
 </div>
 <div class="card-body text-primary">
   <!--   <input type="text" (keyup)="buscarId(txtBuscar.value)" #txtBuscar /> -->
@@ -32,7 +39,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let inventario of lista">
+      <tr *ngFor="let inventario of lista | filter : filterPost">
         <td>{{ inventario.id }}</td>
         <td>{{ inventario.nombre }}</td>
         <td>{{ inventario.cantidad }}</td>
@@ -40,20 +47,20 @@
         <td>{{ inventario.createAt }}</td>
         <td>
           <img
-            *ngIf="inventario.imagenHashCode"
+            *ngIf="inventario.imagen"
             [src]="
               urlEndPoint +
               '/uploads/img/' +
               inventario.id +
-              '?imagenHashCode=' +
-              inventario.imagenHashCode
+              '?imagen=' +
+              inventario.imagen
             "
             class="img-thumbnail rounded"
             style="width: 64px; cursor: pointer"
           />
 
           <img
-            *ngIf="!inventario.imagenHashCode"
+            *ngIf="!inventario.imagen"
             [src]="'/assets/images/image-not-found.png'"
             class="img-thumbnail rounded"
             style="width: 64px; cursor: pointer"

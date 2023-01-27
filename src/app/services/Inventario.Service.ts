@@ -31,16 +31,26 @@ export class InventarioService extends CommonService<Inventario> {
     archivo: File
   ): Observable<Inventario> {
     const formData = new FormData();
+
+    console.log('Archivo', archivo);
     formData.append('archivo', archivo);
     formData.append('nombre', Inventario.nombre);
+    console.log('Fecha', Inventario.createAt);
+    formData.append('createAt', Inventario.createAt.toString());
     formData.append('cantidad', Inventario.cantidad.toString());
+
+    console.log('createAT', formData.get('createAt'));
+
+    // Display the values
 
     let httpHeaders = new HttpHeaders();
 
     return this.http.post<Inventario>(
       this.urlEndPoint + '/crear-con-foto',
       formData,
-      { headers: httpHeaders }
+      {
+        // headers: httpHeaders
+      }
     );
   }
 }

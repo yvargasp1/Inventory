@@ -28,8 +28,9 @@ export class InventarioFormComponent
   listausuarios: Usuario[];
   inventario: Inventario = new Inventario();
   usuario: Usuario = new Usuario();
-  usuarioFiltrado: Observable<Usuario[]>;
+  usuarioFiltrado: Usuario[];
   autoCompleteControl = new FormControl();
+  selectedValue: Usuario;
 
   constructor(
     private InventarioService: InventarioService,
@@ -45,10 +46,18 @@ export class InventarioFormComponent
   }
 
   override ngOnInit(): void {
-    this.usuarioFiltrado = this.autoCompleteControl.valueChanges.pipe(
+    console.log(this.UsuarioService.listar());
+
+    this.UsuarioService.listar().forEach((p) => {
+      console.log(p);
+
+      this.usuarioFiltrado = p;
+    });
+
+    /* this.usuarioFiltrado = this.autoCompleteControl.valueChanges.pipe(
       map((value) => (typeof value === 'string' ? value : value.nombre)),
       flatMap((value) => (value ? this._filter(value) : []))
-    );
+    ); */
 
     this.editar();
     console.log(this.usuarioFiltrado);
@@ -80,9 +89,9 @@ export class InventarioFormComponent
     console.log(this.UsuarioService.ListarporNombre(filterValue));
     return this.UsuarioService.ListarporNombre(filterValue);
   }
-  seleccionarImagen(event: { target: { files: File[] } }): void {
+  seleccionarImagen(event: any) {
     this.imagenSeleccionada = event.target.files[0];
-    console.info(this.imagenSeleccionada);
+    console.info('Imagen', this.imagenSeleccionada);
     if (this.imagenSeleccionada.type.indexOf('image') < 0) {
       this.imagenSeleccionada = null;
       Swal.fire(
@@ -95,8 +104,11 @@ export class InventarioFormComponent
 
   public override crear() {
     var bandera: boolean;
+    console.log('Modelo', this.model);
     console.log('inicio bandera', bandera);
     let nuevoItem = new Usuario();
+    console.log(this.selectedValue.nombre);
+    this.model.usuario = this.selectedValue;
     if (!this.imagenSeleccionada) {
       console.log('Flujo normal', this.model.usuario);
 
@@ -151,23 +163,76 @@ export class InventarioFormComponent
         }
       });
     } else {
-      this.service
-        .crearConImagen(this.model, this.imagenSeleccionada)
-        .subscribe(
-          (producto) => {
-            Swal.fire(
-              'Nuevo',
-              `${this.nombreModel} ${producto.nombre} creado con exito!`,
-              'success'
-            );
-            this.router.navigate([this.redirect]);
-          },
-          (err) => {
-            if (err.status === 400) {
-              this.error = err.error;
+      console.log('Flujo normal', this.model.usuario);
+
+      this.service.listar().forEach((p) => {
+        console.log(p.length);
+
+        console.log(this.model.createAt);
+        for (var i = 0; i < p.length; i++) {
+          //  console.log('x--nombre', p[i].nombre);
+          if (p[i].nombre == this.model.nombre) {
+            bandera = true;
+            console.log('nombre', p[i].nombre);
+            console.log(bandera);
+            break;
+          } else {
+            bandera = false;
+            console.log('diferente nombre', p[i].nombre);
+          }
+        }
+
+        console.log('fin bandera', bandera);
+
+        if (bandera == true) {
+          Swal.fire(
+            'El producto',
+            `${this.nombreModel} ${this.model.nombre} ya se encuentra creado en el sistema.`,
+            'warning'
+          );
+        } else {
+          const date = new Date(this.model.createAt.toString());
+
+          let today = new Date();
+          let today_show = moment(today).format('YYYY-MM-DD');
+
+          if (date <= today && !isNaN(this.model.cantidad)) {
+            console.log(this.imagenSeleccionada);
+            console.log(this.model);
+            this.service
+              .crearConImagen(this.model, this.imagenSeleccionada)
+              .subscribe(
+                () => {
+                  Swal.fire(
+                    'Nuevo',
+                    `${this.model.nombre} creado con exito!`,
+                    'success'
+                  );
+                  this.router.navigate([this.redirect]);
+                },
+                (err) => {
+                  if (err.status === 400) {
+                    this.error = err.error;
+                  }
+                }
+              );
+          } else {
+            if (date > today) {
+              Swal.fire(
+                'Validar fecha',
+                `La fecha de ingreso : ${this.model.createAt} , no puede ser mayor a la fecha actual : ${today_show}.`,
+                'warning'
+              );
+            } else {
+              Swal.fire(
+                'Validar cantidad',
+                `La cantidad : ${this.model.cantidad}, debe ser un numero.`,
+                'warning'
+              );
             }
           }
-        );
+        }
+      });
     }
   }
 

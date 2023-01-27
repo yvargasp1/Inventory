@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <!--   <div class="form-group">
         <label for="createAt">Buscar Usuario</label>
         <div class="example-container">
           <mat-form-field appearance="fill">
@@ -71,17 +71,48 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
-      </div>
+      </div> -->
+
       <div class="form-group">
+        <mat-form-field appearance="fill">
+          <mat-label>Usuario</mat-label>
+          <select matNativeControl [(ngModel)]="selectedValue" name="usuario">
+            <option *ngFor="let usuario of usuarioFiltrado" [ngValue]="usuario">
+              {{ usuario.id }} {{ usuario.nombre }}
+            </option>
+          </select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroupFileAddon01"
+              >Upload</span
+            >
+          </div>
+          <div class="custom-file">
+            <input
+              (change)="seleccionarImagen($event)"
+              type="file"
+              class="custom-file-input"
+              id="inputGroupFile01"
+              aria-describedby="inputGroupFileAddon01"
+            />
+            <label class="custom-file-label" for="inputGroupFile01"
+              >Choose file</label
+            >
+          </div>
+        </div>
+      </div>
+
+      <!--     <div class="form-group">
         <select>
-          <option
-            *ngFor="let usuario of usuarioFiltrado | async"
-            [value]="usuario"
-          >
+          <option *ngFor="let usuario of usuarioFiltrado" [value]="usuario">
             {{ usuario.id }} {{ usuario.nombre }}
           </option>
         </select>
-      </div>
+      </div> -->
 
       <div class="form-group">
         <button
